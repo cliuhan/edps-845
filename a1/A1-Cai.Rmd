@@ -115,7 +115,7 @@ CI <- function(x) {
 # Apply the function to calculate CI
 confIn <- tapply(incomes, statef, CI)
 
-myci <- matrix(unlist(confIn), byrow = T, nrow = length(levels(statef)), , dimnames = list(levels(statef), c("left", "right")))
+myci <- matrix(unlist(confIn), byrow = T, nrow = length(levels(statef)),dimnames = list(levels(statef), c("left", "right")))
 myci
 ```
 
