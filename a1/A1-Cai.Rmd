@@ -54,8 +54,9 @@ rm(x)
 
 1. Create and index a vector using a logical, integer, negative integer, and character vector.
 
-```{r, eval = F}
-s1 <- c(x != 0, 1:10, -(1:5), "FL", "CA", "NY")
+```{r}
+x <- -10:10
+s1 <- c(x > 0, 1:10, -(1:5), "FL", "CA", "NY")
 s2 <- s1[-(1:10)]
 ```
 
@@ -105,24 +106,24 @@ incomes <- c(60, 49, 40, 61, 64, 60, 59, 54, 62, 69, 70, 42, 56,
 
 # 95% confidence interval function
 
-CI <- function(x) { 
-	out <- list(left = mean(x)-qt(0.975, df = length(x)-1)*sd(x)/sqrt(length(x)),
-		right = mean(x)+qt(0.975, df = length(x)-1)*sd(x)/sqrt(length(x)))
-		return(out)
-}
+CI <- function(x) {
+	out <- list(left <- mean(x)-qt(0.975, df = length(x)-1)*sd(x)/sqrt(length(x)),
+	right <-  mean(x)-qt(0.975, df = length(x)-1, lower.tail = F)*sd(x)/sqrt(length(x)))
+	return(out)
+	}
 
 # Apply the function to calculate CI
-
 confIn <- tapply(incomes, statef, CI)
 
-confIn
+myci <- matrix(unlist(confIn), byrow = T, nrow = length(levels(statef)), , dimnames = list(levels(statef), c("left", "right")))
+myci
 ```
 
 2. In what order are the levels of ordered factors stored in?
 
-The levels of factors are stored in alphabetical order, or in the order they were specified to
-factor if they were specified explicitly.
-
+```{r}
+# The levels of factors are stored in alphabetical order, or in the order they were specified to factor if they were specified explicitly.
+```
 ### Chapter 5
 
 1. Create an array with dimensions `c(3, 6, 2)` and use it to demonstrate array indexing.
@@ -130,16 +131,20 @@ factor if they were specified explicitly.
 ```{r}
 a1 <- seq(1,36)
 dim(a1) <- c(3,6,2)
+
+# array indexing
 a1[2,4,]
 ```
 
 2. Create a two dimensional array of 100 integers sampled with replacement from the vector 1:20, and use an index array to set the diagonal values to 0.
 
 ```{r}
-# diagonal values 0?
 a2 <- sample(1:20, 100, replace = T)
 dim(a2) <- c(10,10)
-a2[,]
+a2
+# set diagonal values to 0
+a2[,] <- 0
+a2
 ```
 
 3. Construct the same array using the `array()` function and using a vector with the `dim()` set. Prove they are the same.
@@ -161,7 +166,7 @@ a5 <- a1-a4
 5. Show how to clear the dimensions of an array.
 
 ```{r}
-a2 <- c(a2)
+a4 <- c(a4)
 ```
 
 ### Chapter 6
@@ -179,17 +184,21 @@ L6[["color"]]
 
 2. What is the difference between giving multiple lists to `list()` versus `c()`?
 
-New lists may be formed if we give multiple lists to the function 'list()'.
-When the concatenation function c() is given list arguments, the result is an object of mode
-list also, whose components are those of the argument lists joined together in sequence.
+```{r}
+# New lists may be formed if we give multiple lists to the function 'list()'. When the concatenation function c() is given list arguments, the result is an object of mode list also, whose components are those of the argument lists joined together in sequence.
+```
 
 3. How do data frames in R relate to lists?
 
-A data frame is a list with class "data.frame".
+```{r}
+# A data frame is a list with class "data.frame".
+```
 
 4. What is the purpose of `attach()`?
 
-The 'attach()' function makes the components of a list or data frame temporarily visible as variables under their component name, without the need to quote the list name explicitly each time.
+```{r}
+# The 'attach()' function makes the components of a list or data frame temporarily visible as variables under their component name, without the need to quote the list name explicitly each time.
+```
 
 ### Chapter 7
 
@@ -207,17 +216,20 @@ data(cars)
 
 ```{r}
 x <- rnorm(100, 100, 15)
-qnorm(0.75,mean=50,sd=5)
-pnorm(1.645,mean=0, sd=1)
+qnorm(0.75,mean = 50,sd = 5)
+pnorm(1.96,mean = 0, sd = 1)
 ```
 
 2. Simulate data from a t distribution and check their normality.
 
 ```{r}
+set.seed(051716)
 y <- rt(1000, df = 12)
 plot(density(y))
 qqnorm(y);qqline(y, col = 2)
 shapiro.test(y)
+
+# The distribution is normal based on the plots and the insignificance of the Shapiro-Wilk normality test.
 ```
 
 ### Chapter 9
@@ -225,8 +237,33 @@ shapiro.test(y)
 1. What is the difference between `if() else` and `ifelse()`?
 
 ```{r}
+#The if () else function evaluates to a single logical value and the result of the entire expression is then evident.
 
+# The ifelse() function has the form ifelse(condition, a, b) and returns a vector of the length of its longest argument, with elements a[i] if condition[i] is true, otherwise b[i]
 
+# A demonstration of if() else: find the absoluate value for certain x value
+x <- -1
+
+if (x > 0) {
+   print(x)
+} else if (x < 0) {
+   print(-x)
+} else
+   print(0)
+
+# A demonstration of ifelse(): find absoluate values
+x <- c(-1, -5, 6, 0, 2, 5, -8, 10)
+temp <- x >= 0
+ifelse(temp, x, -x)
 ```
 
 2. Demonstrate the use of a `for()` loop.
+
+```{r}
+mymean <- matrix(nrow = 3, ncol = 1, dimnames= list(levels(s3$state), "mean"))
+for(i in levels(s3$state)) {
+	 mymean[i, "mean"] <- mean(s3$amount[s3$state == i], na.rm = T)
+}
+mymean
+```
+
