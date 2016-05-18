@@ -158,11 +158,10 @@ values <- sample(1:20, 100, replace = T)
 a2 <- values
 dim(a2) <- c(10,10)
 a2
-a <- a2
+
 # set diagonal values to 0
-i <- rep((1:10), 2)
-dim(i) <- c(10, 2)
-a[i] <- 0
+a <- a2
+diag(a) <- 0
 a
 ```
 
