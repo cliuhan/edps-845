@@ -55,9 +55,16 @@ rm(x)
 1. Create and index a vector using a logical, integer, negative integer, and character vector.
 
 ```{r}
-x <- -10:10
-s1 <- c(x > 0, 1:10, -(1:5), "FL", "CA", "NY")
-s2 <- s1[-(1:10)]
+x <- 1:10
+y <- x > 0
+z <- -(1:5)
+t <- c("FL", "CA", "NY")
+
+s1 <- c(x, y, z, t)
+
+s1[1:10]
+s1[-(1:5)]
+
 ```
 
 3. Create a simple data frame containing a numeric variable, character variable, and factor with at least 3 levels. Use the data frame to demonstrate how R codes and handles missing data. 
@@ -67,9 +74,17 @@ n <- c(1:10, 18, 19, rep(NA, 3))
 fruit <- c("orange", "peach", "grape")
 state <- c("FL", "GA", "CA")
 state <- as.factor(state)
-s3 <- data.frame(n, fruit, state)
+s3 <- data.frame(fruit, state,n)
+
+# examine missing data in a variable in the dataset
 temp <- is.na(s3$n)
-mean <- mean(s3$n, na.rm = T)
+sum(temp)
+
+# subset data without missing data
+s3r <- subset(s3, !temp)
+
+# calculate mean by removing cases with missing data
+mean(s3$n, na.rm = T)
 ```
 
 ### Chapter 3
@@ -85,7 +100,7 @@ mode(x)
 
 # check and change attribute
 attributes(s3)
-attr(s3, "names") <- c("amount", "fruit", "state")
+attr(s3, "names") <- c("fruit", "state", "amount")
 ```
 
 ### Chapter 4
@@ -139,19 +154,23 @@ a1[2,4,]
 2. Create a two dimensional array of 100 integers sampled with replacement from the vector 1:20, and use an index array to set the diagonal values to 0.
 
 ```{r}
-a2 <- sample(1:20, 100, replace = T)
+values <- sample(1:20, 100, replace = T)
+a2 <- values
 dim(a2) <- c(10,10)
 a2
+a <- a2
 # set diagonal values to 0
-a2[,] <- 0
-a2
+i <- rep((1:10), 2)
+dim(i) <- c(10, 2)
+a[i] <- 0
+a
 ```
 
 3. Construct the same array using the `array()` function and using a vector with the `dim()` set. Prove they are the same.
 
 ```{r}
-a3 <- array(sample(1:20, 100, replace = T), dim = c(10,10))
-a3
+a3 <- array(values, dim = c(10,10))
+identical(a2, a3)
 ```
 
 4. Use your array from 5.1, and another with the same dimensions, to demonstrate how arithmetic works with arrays.
@@ -241,7 +260,7 @@ shapiro.test(y)
 
 # The ifelse() function has the form ifelse(condition, a, b) and returns a vector of the length of its longest argument, with elements a[i] if condition[i] is true, otherwise b[i]
 
-# A demonstration of if() else: find the absoluate value for certain x value
+# A demonstration of if() else: find the absoluate value for a certain x value
 x <- -1
 
 if (x > 0) {
