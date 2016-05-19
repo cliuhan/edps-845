@@ -26,8 +26,11 @@ Your file should have an Rmd extension, and you should check that it compiles to
 help.start()
 
 ??equate::equate
-??equate::freqtab
+?equate::freqtab
 
+# With `?`, we can get more information on any specific named function
+
+# `??` allows searching for help in various ways.
 ```
 
 2. Demonstrate correct and incorrect naming of R objects.
@@ -204,18 +207,32 @@ L6[["color"]]
 
 ```{r}
 # New lists may be formed if we give multiple lists to the function 'list()'. When the concatenation function c() is given list arguments, the result is an object of mode list also, whose components are those of the argument lists joined together in sequence.
+
+# example
+
+list(list(a = 1:5, b = letters[1:5]), list(d = 6:10, e = letters[6:10]))
+c(list(a = 1:5, b = letters[1:5]), list(d = 6:10, e = letters[6:10]))
 ```
 
 3. How do data frames in R relate to lists?
 
 ```{r}
-# A data frame is a list with class "data.frame".
+# A data frame is a list with class "data.frame". The components of a data frame are vectors (numeric, character, or logical), and factors with the same length. Matrix structures must all have the same row size.
+
 ```
 
 4. What is the purpose of `attach()`?
 
 ```{r}
-# The 'attach()' function makes the components of a list or data frame temporarily visible as variables under their component name, without the need to quote the list name explicitly each time.
+# The attach() function makes the components of a list or data frame temporarily visible as variables under their component name, without the need to quote the list name explicitly each time.
+
+# example:
+
+s4 <- data.frame(number = rnorm(5), letter = letters[1:5])
+attach(s4)
+
+mean(number)
+table(letter)
 ```
 
 ### Chapter 7
@@ -223,9 +240,17 @@ L6[["color"]]
 1. Demonstrate the different approaches to reading in data from an external file.
 
 ```{r, eval = F}
-A15 <- read.table("C:/Users/Liuhan Cai/School/Summer 2016/edps 845/A15.csv", header = T, sep = ",")
-A15 <- load("C:/Users/Liuhan Cai/School/Summer 2016/edps 845/A15.rdata")
+
+# read in table
+
+mydat <- data.frame(x = 1:8, y = 4:11, z = letters[1:8])
+write.csv(mydat, file = "mydat.csv")
+mydat <- read.table("mydat.csv", header = T, sep = ",", row.names = 1)
+
+# load existing data
+
 data(cars)
+
 ```
 
 ### Chapter 8
@@ -233,8 +258,13 @@ data(cars)
 1. Demonstrate the use of distribution functions to simulate data and calculate probabilities and quantiles
 
 ```{r}
+# sample 100 numbers from a normal distribution with mean = 100 and sd = 15
 x <- rnorm(100, 100, 15)
+
+# find the value at the 75 percentile in a normal distribution with mean = 50, sd = 5
 qnorm(0.75,mean = 50,sd = 5)
+
+# find the percentile of a value = 1.96 in a normal distribution with mean = 0, sd = 1
 pnorm(1.96,mean = 0, sd = 1)
 ```
 
@@ -242,9 +272,15 @@ pnorm(1.96,mean = 0, sd = 1)
 
 ```{r}
 set.seed(051716)
+
+# sample 1000 cases from a t distribution
 y <- rt(1000, df = 12)
+
+# plot the check the normality of the distribution from the 1000 cases.
 plot(density(y))
 qqnorm(y);qqline(y, col = 2)
+
+# examine normality with Shapiro-Wilk test
 shapiro.test(y)
 
 # The distribution is normal based on the plots and the insignificance of the Shapiro-Wilk normality test.
