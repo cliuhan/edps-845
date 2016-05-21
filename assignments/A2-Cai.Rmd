@@ -129,7 +129,7 @@ It returns to `NULL`.
 ```{r}
 
 a1 <- 1:4
-dim(a)
+dim(a1)
 
 ```
 
@@ -287,6 +287,7 @@ dat2
 2. How would you select a random sample of m rows from a data frame? What if the sample had to be contiguous (i.e., with an initial row, a final row, and every row in between)?
 
 ```{r}
+
 # a random sample of m rows
 
 dat <- data.frame(x = 1:10, y = rnorm(10), z = letters[1:10])
@@ -297,7 +298,7 @@ m
 rows <- rownames(dat)
 middle <- seq(3, nrow(dat), by = 2)
 final <- nrow(dat)
-contiguous <- dat[c(rows[1], rows[middle], rows[last]), ]
+contiguous <- dat[c(rows[1], rows[middle], rows[final]), ]
 contiguous
 
 ```
