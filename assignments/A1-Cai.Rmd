@@ -1,0 +1,323 @@
+---
+title: "EDPS 845 Assignment 1 Answers"
+author: "Liuhan Cai"
+---
+
+## Overview
+
+Demonstrate your mastery of concepts and procedures covered in *An Introduction to R*, chapters 1 through 9. See Appendix A for examples.
+
+Complete this assignment by responding to each question below using your own original code, in addition to answering any questions. Follow Google's [R coding conventions](https://google.github.io/styleguide/Rguide.xml), and use [R markdown](http://rmarkdown.rstudio.com/index.html) formatting for your responses, with example R code written as
+
+```{r}
+# Comment within some example code
+```
+
+Your file should have an Rmd extension, and you should check that it compiles to HTML using the *Knit* command in RStudio (this runs `knitr::knit()` on the file). Note that you can already *Knit* this file to see how it works.
+
+## Exercises
+
+### Chapter 1
+
+1. Show that you can access the home page for the HTML R help menu, as well as help files for individual functions.
+
+```{r, eval=F}
+
+help.start()
+
+??equate::equate
+?equate::freqtab
+
+# With `?`, we can get more information on any specific named function
+
+# `??` allows searching for help in various ways.
+```
+
+2. Demonstrate correct and incorrect naming of R objects.
+
+```{r}
+# correct naming
+x <- 1:10
+
+# incorrect naming
+# 10x <- 1:10
+# x::10 <- 1:10
+
+```
+
+3. How do you list all available objects in the R workspace? And how do you remove individual objects?
+
+```{r}
+
+ls()
+rm(x)
+
+```
+### Chapter 2
+
+1. Create and index a vector using a logical, integer, negative integer, and character vector.
+
+```{r}
+x <- 1:10
+y <- x > 0
+z <- -(1:5)
+t <- c("FL", "CA", "NY")
+
+s1 <- c(x, y, z, t)
+
+s1[1:10]
+s1[-(1:5)]
+
+```
+
+3. Create a simple data frame containing a numeric variable, character variable, and factor with at least 3 levels. Use the data frame to demonstrate how R codes and handles missing data. 
+
+```{r}
+n <- c(1:10, 18, 19, rep(NA, 3))
+fruit <- c("orange", "peach", "grape")
+state <- c("FL", "GA", "CA")
+state <- as.factor(state)
+s3 <- data.frame(fruit, state,n)
+
+# examine missing data in a variable in the dataset
+temp <- is.na(s3$n)
+sum(temp)
+
+# subset data without missing data
+s3r <- subset(s3, !temp)
+
+# calculate mean by removing cases with missing data
+mean(s3$n, na.rm = T)
+```
+
+### Chapter 3
+
+1. Demonstrate how to check and change the modes and attributes of R objects.
+
+```{r}
+# check and change the mode of a vector
+x <- seq(1,10)
+mode(x)
+x <- as.character(x)
+mode(x)
+
+# check and change attribute
+attributes(s3)
+attr(s3, "names") <- c("fruit", "state", "amount")
+```
+
+### Chapter 4
+
+1. Complete the exercise on page 17, where you calculate 95% confidence intervals for state mean incomes.
+
+```{r}
+state <- c("tas", "sa", "qld", "nsw", "nsw", "nt", "wa", "wa",
+"qld", "vic", "nsw", "vic", "qld", "qld", "sa", "tas",
+"sa", "nt", "wa", "vic", "qld", "nsw", "nsw", "wa",
+"sa", "act", "nsw", "vic", "vic", "act")
+
+statef <- factor(state)
+
+incomes <- c(60, 49, 40, 61, 64, 60, 59, 54, 62, 69, 70, 42, 56,
+61, 61, 61, 58, 51, 48, 65, 49, 49, 41, 48, 52, 46,
+59, 46, 58, 43)
+
+# 95% confidence interval function
+
+CI <- function(x) {
+	out <- list(left <- mean(x)-qt(0.975, df = length(x)-1)*sd(x)/sqrt(length(x)),
+	right <-  mean(x)-qt(0.975, df = length(x)-1, lower.tail = F)*sd(x)/sqrt(length(x)))
+	return(out)
+	}
+
+# Apply the function to calculate CI
+confIn <- tapply(incomes, statef, CI)
+
+myci <- matrix(unlist(confIn), byrow = T, nrow = length(levels(statef)),dimnames = list(levels(statef), c("left", "right")))
+myci
+```
+
+2. In what order are the levels of ordered factors stored in?
+
+```{r}
+# The levels of factors are stored in alphabetical order, or in the order they were specified to factor if they were specified explicitly.
+```
+### Chapter 5
+
+1. Create an array with dimensions `c(3, 6, 2)` and use it to demonstrate array indexing.
+
+```{r}
+a1 <- seq(1,36)
+dim(a1) <- c(3,6,2)
+
+# array indexing
+a1[2,4,]
+```
+
+2. Create a two dimensional array of 100 integers sampled with replacement from the vector 1:20, and use an index array to set the diagonal values to 0.
+
+```{r}
+values <- sample(1:20, 100, replace = T)
+a2 <- values
+dim(a2) <- c(10,10)
+a2
+
+# set diagonal values to 0
+a <- a2
+diag(a) <- 0
+a
+```
+
+3. Construct the same array using the `array()` function and using a vector with the `dim()` set. Prove they are the same.
+
+```{r}
+a3 <- array(values, dim = c(10,10))
+identical(a2, a3)
+```
+
+4. Use your array from 5.1, and another with the same dimensions, to demonstrate how arithmetic works with arrays.
+
+```{r}
+a4 <- seq(10,45)
+dim(a4) <- c(3, 6, 2)
+a14 <- a1*a4
+a5 <- a1-a4
+```
+
+5. Show how to clear the dimensions of an array.
+
+```{r}
+a4 <- c(a4)
+```
+
+### Chapter 6
+
+1. Demonstrate the different ways of subsetting a list.
+
+```{r}
+L6 <- list(name="apple", category="fruit", ncolor = 3,
+color=c("red","pink","green"), quantity = 20)
+
+L6[[4]]
+L6$color
+L6[["color"]]
+```
+
+2. What is the difference between giving multiple lists to `list()` versus `c()`?
+
+```{r}
+# New lists may be formed if we give multiple lists to the function 'list()'. When the concatenation function c() is given list arguments, the result is an object of mode list also, whose components are those of the argument lists joined together in sequence.
+
+# example
+
+list(list(a = 1:5, b = letters[1:5]), list(d = 6:10, e = letters[6:10]))
+c(list(a = 1:5, b = letters[1:5]), list(d = 6:10, e = letters[6:10]))
+```
+
+3. How do data frames in R relate to lists?
+
+```{r}
+# A data frame is a list with class "data.frame". The components of a data frame are vectors (numeric, character, or logical), and factors with the same length. Matrix structures must all have the same row size.
+
+```
+
+4. What is the purpose of `attach()`?
+
+```{r}
+# The attach() function makes the components of a list or data frame temporarily visible as variables under their component name, without the need to quote the list name explicitly each time.
+
+# example:
+
+s4 <- data.frame(number = rnorm(5), letter = letters[1:5])
+attach(s4)
+
+mean(number)
+table(letter)
+```
+
+### Chapter 7
+
+1. Demonstrate the different approaches to reading in data from an external file.
+
+```{r, eval = F}
+
+# read in table
+
+mydat <- data.frame(x = 1:8, y = 4:11, z = letters[1:8])
+write.csv(mydat, file = "mydat.csv")
+mydat <- read.table("mydat.csv", header = T, sep = ",", row.names = 1)
+
+# load existing data
+
+data(cars)
+
+```
+
+### Chapter 8
+
+1. Demonstrate the use of distribution functions to simulate data and calculate probabilities and quantiles
+
+```{r}
+# sample 100 numbers from a normal distribution with mean = 100 and sd = 15
+x <- rnorm(100, 100, 15)
+
+# find the value at the 75 percentile in a normal distribution with mean = 50, sd = 5
+qnorm(0.75,mean = 50,sd = 5)
+
+# find the percentile of a value = 1.96 in a normal distribution with mean = 0, sd = 1
+pnorm(1.96,mean = 0, sd = 1)
+```
+
+2. Simulate data from a t distribution and check their normality.
+
+```{r}
+set.seed(051716)
+
+# sample 1000 cases from a t distribution
+y <- rt(1000, df = 12)
+
+# plot the check the normality of the distribution from the 1000 cases.
+plot(density(y))
+qqnorm(y);qqline(y, col = 2)
+
+# examine normality with Shapiro-Wilk test
+shapiro.test(y)
+
+# The distribution is normal based on the plots and the insignificance of the Shapiro-Wilk normality test.
+```
+
+### Chapter 9
+
+1. What is the difference between `if() else` and `ifelse()`?
+
+```{r}
+#The if () else function evaluates to a single logical value and the result of the entire expression is then evident.
+
+# The ifelse() function has the form ifelse(condition, a, b) and returns a vector of the length of its longest argument, with elements a[i] if condition[i] is true, otherwise b[i]
+
+# A demonstration of if() else: find the absoluate value for a certain x value
+x <- -1
+
+if (x > 0) {
+   print(x)
+} else if (x < 0) {
+   print(-x)
+} else
+   print(0)
+
+# A demonstration of ifelse(): find absoluate values
+x <- c(-1, -5, 6, 0, 2, 5, -8, 10)
+temp <- x >= 0
+ifelse(temp, x, -x)
+```
+
+2. Demonstrate the use of a `for()` loop.
+
+```{r}
+mymean <- matrix(nrow = 3, ncol = 1, dimnames= list(levels(s3$state), "mean"))
+for(i in levels(s3$state)) {
+	 mymean[i, "mean"] <- mean(s3$amount[s3$state == i], na.rm = T)
+}
+mymean
+```
+
