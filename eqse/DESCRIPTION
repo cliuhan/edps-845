@@ -1,0 +1,12 @@
+Package: eqse
+Type: Package
+Title: Equipercentile Equating Analytic Standard Error
+Version: 1.0
+Date: 2016-05-28
+Author: Liuhan Cai
+Maintainer: Liuhan Cai <cliuhan@gmail.com>
+Description: This package is used to calcuate the analytic standard error of equipercentile equating under single- or random- groups design.
+License: DK
+RoxygenNote: 5.0.1
+
+
