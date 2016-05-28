@@ -64,7 +64,7 @@ equip <- function (x, y, ly = min(scales(y)), ky = max(scales(y))) {
 	}
 	# Get se
 	se <- numeric(length = length(prank))
-	se[xnone] <- 0
+	se[xnone] <- NA
 	se[yxi] <- sqrt((1/(g0^2)) * (prank[yxi] * (1 - prank[yxi]) * (xn + yn)/(xn * yn) - 
 			(fy[yu] - prank[yxi]) * (prank[yxi] - yu2)/(yn * g0)))
 	
